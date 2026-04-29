@@ -36,7 +36,7 @@ Si no solicitaste este código, ignora este mensaje.
     msg["To"] = email
 
     try:
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+        with smtplib.SMTP_SSL("smtp.gmail.com", 587) as server:
             server.login(gmail_user, gmail_password)
             server.send_message(msg)
     except Exception as e:
