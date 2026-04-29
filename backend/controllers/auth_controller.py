@@ -6,8 +6,9 @@ from email.mime.text import MIMEText
 
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
-import resend
+
 from backend.models.db_model import OTPStore, SessionToken
+import requests
 
 
 def generate_otp() -> str:
@@ -15,24 +16,29 @@ def generate_otp() -> str:
 
 
 def send_otp_email(email: str, code: str):
-    api_key = os.getenv("RESEND_API_KEY")
+    api_key = os.getenv("BREVO_API_KEY")
 
     if not api_key:
         print(f"[OTP] Código para {email}: {code}")
         return
 
-    resend.api_key = api_key
-
     try:
-        resend.Emails.send({
-            "from": "onboarding@resend.dev",
-            "to": email,
-            "subject": "Código de verificación - Sistema Estudiantes",
-            "text": f"Tu código de verificación es: {code}\n\nEste código se usa solo una vez."
-        })
+        response = requests.post(
+            "https://api.brevo.com/v3/smtp/email",
+            headers={
+                "api-key": api_key,
+                "Content-Type": "application/json"
+            },
+            json={
+                "sender": {"name": "Sistema Estudiantes", "email": "no-reply@tudominio.com"},
+                "to": [{"email": email}],
+                "subject": "Código de verificación - Sistema Estudiantes",
+                "textContent": f"Tu código de verificación es: {code}\n\nEste código se usa solo una vez."
+            }
+        )
+        response.raise_for_status()
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error enviando email: {str(e)}")
-
 
 class AuthController:
     @staticmethod
