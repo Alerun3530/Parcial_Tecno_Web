@@ -30,7 +30,7 @@ def send_otp_email(email: str, code: str):
                 "Content-Type": "application/json"
             },
             json={
-                "sender": {"name": "Sistema Estudiantes", "email": "no-reply@tudominio.com"},
+                "sender": {"name": "Sistema Estudiantes", "email": "alecorro123@outlook.com"},
                 "to": [{"email": email}],
                 "subject": "Código de verificación - Sistema Estudiantes",
                 "textContent": f"Tu código de verificación es: {code}\n\nEste código se usa solo una vez."
