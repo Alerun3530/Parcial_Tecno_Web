@@ -1,6 +1,12 @@
 const API_URL = "/api/students";
 const AUTH_URL = "/api/auth";
 
+window.addEventListener('pageshow', (event) => {
+    if (event.persisted) {
+        verifySessionOrRedirect();
+    }
+});
+
 function authHeaders() {
     const token = sessionStorage.getItem("token");
     return {

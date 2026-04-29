@@ -2,6 +2,12 @@ const API_URL = "/api";
 
 let currentEmail = "";
 
+window.addEventListener('pageshow', (event) => {
+    if (event.persisted) {
+        validateExistingSession();
+    }
+});
+
 // Muestra modal si viene redirigido por acceso no autorizado
 function checkUnauthParam() {
     const params = new URLSearchParams(window.location.search);
