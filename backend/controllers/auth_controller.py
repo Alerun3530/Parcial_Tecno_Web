@@ -6,7 +6,7 @@ from email.mime.text import MIMEText
 
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
-
+import resend
 from backend.models.db_model import OTPStore, SessionToken
 
 
@@ -15,30 +15,21 @@ def generate_otp() -> str:
 
 
 def send_otp_email(email: str, code: str):
-    gmail_user = os.getenv("GMAIL_USER")
-    gmail_password = os.getenv("GMAIL_PASSWORD")
+    api_key = os.getenv("RESEND_API_KEY")
 
-    if not gmail_user or not gmail_password:
+    if not api_key:
         print(f"[OTP] Código para {email}: {code}")
         return
 
-    msg = MIMEText(
-        f"""
-Tu código de verificación es: {code}
-
-Este código se usa solo una vez.
-Si no solicitaste este código, ignora este mensaje.
-"""
-    )
-
-    msg["Subject"] = "Código de verificación - Sistema Estudiantes"
-    msg["From"] = gmail_user
-    msg["To"] = email
+    resend.api_key = api_key
 
     try:
-        with smtplib.SMTP_SSL("smtp.gmail.com", 587) as server:
-            server.login(gmail_user, gmail_password)
-            server.send_message(msg)
+        resend.Emails.send({
+            "from": "onboarding@resend.dev",
+            "to": email,
+            "subject": "Código de verificación - Sistema Estudiantes",
+            "text": f"Tu código de verificación es: {code}\n\nEste código se usa solo una vez."
+        })
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error enviando email: {str(e)}")
 
