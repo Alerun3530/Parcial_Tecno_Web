@@ -72,7 +72,7 @@ async function requestOTP(isResend = false) {
 
         const msg = isResend
             ? 'Código reenviado. El código anterior ya no es válido.'
-            : 'Código enviado. Revisa tu correo o la consola del servidor.';
+            : 'Código enviado. Revisa tu correo y coloca el código.';
         showMessage(msg, 'success');
     } catch (error) {
         showMessage(error.message, 'error');
