@@ -19,7 +19,8 @@ def send_otp_email(email: str, code: str):
     api_key = os.getenv("BREVO_API_KEY")
 
     if not api_key:
-        raise HTTPException(status_code=500, detail="Servicio de correo no configurado")
+        print(f"[OTP] Código para {email}: {code}")
+        return
         
 
     try:

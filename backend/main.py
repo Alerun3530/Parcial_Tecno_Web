@@ -1,5 +1,7 @@
 from pathlib import Path
-
+from backend.middleware.logging_middleware import LoggingMiddleware
+from backend.middleware.audit_middleware import AuditMiddleware
+from backend.middleware.rate_limit_middleware import RateLimitMiddleware
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
@@ -45,5 +47,11 @@ def students_page():
     return FileResponse(FRONTEND_DIR / "students.html", headers=_NO_CACHE)
 
 
+app.add_middleware(LoggingMiddleware)
+app.add_middleware(AuditMiddleware)
+app.add_middleware(RateLimitMiddleware)
+
+
 app.include_router(auth.router)
 app.include_router(students.router)
+
